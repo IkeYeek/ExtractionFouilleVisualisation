@@ -1,5 +1,6 @@
 *
 !.gitignore
-!/dl_dataset.sh
+!dl_dataset.sh
+!dataset
 !dl_variables_description.sh
 !main.py
