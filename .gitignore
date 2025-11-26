@@ -1,3 +1,4 @@
 *
 !.gitignore
 !/dl_dataset.sh
+!dl_variables_description.sh
