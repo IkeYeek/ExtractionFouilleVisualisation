@@ -40,8 +40,7 @@ region_map = {5:'''Outre-mer ''',11:'Ile-de-France', 24:'Centre-Val de Loire', 2
     76:'Languedoc-Roussillon-Midi-Pyrénées',84:'Auvergne-Rhône-Alpes',93:'''Provence-Alpes-Côte d'Azur et Corse''',
     0:'Inconnue',9:'Inconnue',99:'Inconnue'
 } # <- Unknown regions
-# df['BEN_REG'] = df['BEN_REG'].map(region_map) # map INSEE region code to region name
-
+age_map = {0:'0 to 19 years',20:'20 to 59 years', 60:'Over 60 years', 99:'Age Inconnu'}
 
 df = df[~df["BEN_REG"].isin([0, 9, 99])] # drop Unknown regions
 
@@ -83,15 +82,13 @@ def normalize_by_pop(v: pd.Series):
 # plt.show()
 
 # Plot montant remboursé euros par (habitant: chaque tranche d'age stackée) VS region (stacked)
-
 reg_to_reimbursement: pd.Series = df.groupby(by=["BEN_REG", "age"])["REM"].sum()
 reg_to_reimbursement_normalized = reg_to_reimbursement.to_frame().apply(lambda s: s.iloc[0] / region_to_pop_2025[s.name[0]], axis=1).reset_index(name="reimbursed_per_person") # normalize py pop (douteux puisque nombre(vieux) != nombre(jeunes) dans chaque région mais bon..)
 pivot = reg_to_reimbursement_normalized.pivot(index="BEN_REG", columns="age", values="reimbursed_per_person")
 pivot = pivot[[0, 20, 60]]
-sorted_pivot = pivot.iloc[pivot.sum(axis=1).reset_index()[0].sort_values(ascending=True).index]
-sorted_pivot.index = sorted_pivot.index.map(region_map)
-age_map = {0:'0 to 19 years',20:'20 to 59 years', 60:'Over 60 years', 99:'Age Inconnu'}
-sorted_pivot.columns = sorted_pivot.columns.map(age_map)
+sorted_pivot = pivot.iloc[pivot.sum(axis=1).reset_index()[0].sort_values(ascending=True).index] # ugly sort
+sorted_pivot.index = sorted_pivot.index.map(region_map) # map INSEE region code to region name
+sorted_pivot.columns = sorted_pivot.columns.map(age_map) # map to age groups names
 sorted_pivot.plot.barh(stacked=True, ylabel="Montant remboursé euros par habitant", xlabel="", title="Montant remboursé euros par habitant(et tranche d'age) par region")
 plt.subplots_adjust(left=0.3)
 plt.show()
