@@ -1,6 +1,11 @@
 *
 !.gitignore
 !dl_dataset.sh
+!dl_geojson.sh
 !dataset
-!dl_variables_description.sh
+!merge_regions.py
 !main.py
+!choropleth_skeleton.py
+
+!flake.nix
+!flake.lock

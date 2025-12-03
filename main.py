@@ -19,10 +19,11 @@ col_to_label = {
     "REM": "Montant Remboursé",
     "BSE": "Base de Remboursement",
     "BOITES": "Nombre de boîtes délivrées",
-    "NBC": "Nombre de consommants"
+    "NBC": "Nombre de consommants",
 }
 
 
-
-df = pd.read_csv("OPEN_MEDIC_2024.CSV", encoding="latin2", sep=";")
-print(df.columns) # ['ATC1', 'l_ATC1', 'ATC2', 'L_ATC2', 'ATC3', 'L_ATC3', 'ATC4', 'L_ATC4', 'ATC5', 'L_ATC5', 'CIP13', 'l_cip13', 'TOP_GEN', 'GEN_NUM', 'age', 'sexe', 'BEN_REG', 'PSP_SPE', 'BOITES', 'REM', 'BSE']
+df = pd.read_csv("./dataset/OPEN_MEDIC_2024.csv", encoding="latin2", sep=";")
+print(
+    df.columns
+)  # ['ATC1', 'l_ATC1', 'ATC2', 'L_ATC2', 'ATC3', 'L_ATC3', 'ATC4', 'L_ATC4', 'ATC5', 'L_ATC5', 'CIP13', 'l_cip13', 'TOP_GEN', 'GEN_NUM', 'age', 'sexe', 'BEN_REG', 'PSP_SPE', 'BOITES', 'REM', 'BSE']
