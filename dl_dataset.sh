@@ -11,6 +11,8 @@ TMP_DIR="$OUTPUT_DIR/tmp"
 mkdir -p "$TMP_DIR"
 
 curl -L "https://www.assurance-maladie.ameli.fr/sites/default/files/2024_descriptif-variables_open-medic.xls" -o "$OUTPUT_DIR/var_desc.xls"
+curl -L "https://www.data.gouv.fr/api/1/datasets/r/06daa3be-9899-4c77-863e-07315e19ed72"
+curl -L "https://france-geojson.gregoiredavid.fr/repo/regions.geojson" -o "$OUTPUT_DIR/regions.geojson"
 
 for year in "${YEARS[@]}"; do
   URL="$BASE_URL$year"
