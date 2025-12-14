@@ -1,5 +1,6 @@
 from io import TextIOWrapper
 from shapely.geometry import shape, mapping
+from shapely import affinity
 import sys
 import json
 
@@ -36,29 +37,52 @@ def main(input: TextIOWrapper, output: TextIOWrapper):
 
     paca_corse = {
         "type": "Feature",
-        "properties": {**paca["properties"], "nom": "PACA + Corse"},
+        "properties": {
+            **paca["properties"],
+            "nom": "PACA + Corse",
+            "join_key": "PACA + Corse",
+        },
         "geometry": mapping(paca_corse_geom),
     }
 
-    outre_mer_geoms = [
-        shape(guadeloupe["geometry"]),
-        shape(martinique["geometry"]),
-        shape(guyane["geometry"]),
-        shape(reunion["geometry"]),
-        shape(mayotte["geometry"]),
+    outre_mer_list = [guadeloupe, martinique, guyane, reunion, mayotte]
+
+    target_positions = [
+        (-6.5, 50.0),
+        (-6.5, 49.0),
+        (-6.5, 48.0),
+        (-6.5, 47.0),
+        (-6.5, 46.0),
     ]
 
-    outre_mer_geom = outre_mer_geoms[0]
-    for geom in outre_mer_geoms[1:]:
-        outre_mer_geom = outre_mer_geom.union(geom)
+    moved_outre_mer = []
 
-    outre_mer = {
-        "type": "Feature",
-        "properties": {"code": 5, "nom": "Outre-Mer"},
-        "geometry": mapping(outre_mer_geom),
-    }
+    for feature, (tgt_x, tgt_y) in zip(outre_mer_list, target_positions):
+        geom = shape(feature["geometry"])
 
-    new_features = [
+        if "Guyane" in feature["properties"].get("nom", ""):
+            geom = affinity.scale(geom, xfact=0.2, yfact=0.2)
+        else:
+            geom = affinity.scale(geom, xfact=1.5, yfact=1.5)
+
+        centroid = geom.centroid
+        x_shift = tgt_x - centroid.x
+        y_shift = tgt_y - centroid.y
+        new_geom = affinity.translate(geom, xoff=x_shift, yoff=y_shift)
+
+        new_properties = feature["properties"].copy()
+
+        new_properties["join_key"] = "Outre-Mer"
+
+        new_feature = {
+            "type": "Feature",
+            "properties": new_properties,
+            "geometry": mapping(new_geom),
+        }
+        moved_outre_mer.append(new_feature)
+
+    final_standard_regions = []
+    standard_regions = [
         idf,
         centre,
         bourgogne,
@@ -70,8 +94,19 @@ def main(input: TextIOWrapper, output: TextIOWrapper):
         nouvelle_aquitaine,
         occitanie,
         auvergne,
+    ]
+
+    for reg in standard_regions:
+        props = reg["properties"].copy()
+        props["join_key"] = props.get("nom")
+        final_standard_regions.append(
+            {"type": "Feature", "properties": props, "geometry": reg["geometry"]}
+        )
+
+    new_features = [
+        *final_standard_regions,
         paca_corse,
-        outre_mer,
+        *moved_outre_mer,
     ]
 
     new_geojson = {"type": "FeatureCollection", "features": new_features}
