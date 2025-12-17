@@ -2,8 +2,10 @@
 !.gitignore
 !dl_dataset.sh
 !dl_geojson.sh
+!dl_french_population.sh
 !dataset
 !merge_regions.py
+!population_stats.py
 !main.py
 !choropleths/
 
