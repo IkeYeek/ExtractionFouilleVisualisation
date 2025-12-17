@@ -2,7 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 pd_all_rows_ctx = lambda: pd.option_context('display.max_rows', None)
-plt.subplots_adjust(left=0.3) # leave space on the left ...
 
 # variables = pd.read_excel("2024_descriptif-variables_open-medic.xls")
 # print(variables)
@@ -75,14 +74,22 @@ def normalize_by_pop(v: pd.Series):
 
 # Plot montant remboursé euros par (habitant: chaque tranche d'age stackée) VS region (stacked)
 
-# reg_to_reimbursement: pd.Series = df.groupby(by=["BEN_REG", "age"])["REM"].sum()
+reg_to_reimbursement: pd.Series = df.groupby(by=["BEN_REG", "age"])["REM"].sum()
+def f(r: pd.Series):
+    region_id: int = r.name[0]
+    age_group_id: int = r.name[1]
+    if (region_id not in total_people_per_age_per_region) or (age_group_id not in total_people_per_age_per_region[region_id]):
+        return None
+    return r.iloc[0] / total_people_per_age_per_region[region_id][age_group_id]
+
 # reg_to_reimbursement_normalized = reg_to_reimbursement.to_frame().apply(lambda s: s.iloc[0] / region_to_pop_2025[s.name[0]], axis=1).reset_index(name="reimbursed_per_person") # normalize py pop (douteux puisque nombre(vieux) != nombre(jeunes) dans chaque région mais bon..)
-# pivot = reg_to_reimbursement_normalized.pivot(index="BEN_REG", columns="age", values="reimbursed_per_person")
-# pivot = pivot[[0, 20, 60]]
-# sorted_pivot = pivot.iloc[pivot.sum(axis=1).reset_index()[0].sort_values(ascending=True).index] # ugly sort
-# sorted_pivot.index = sorted_pivot.index.map(region_map) # map INSEE region code to region name
-# sorted_pivot.columns = sorted_pivot.columns.map(age_map) # map to age groups names
-# sorted_pivot.plot.barh(stacked=True, ylabel="Montant remboursé euros par habitant", xlabel="", title="Montant remboursé euros par habitant(et tranche d'age) par region")
+reg_to_reimbursement_normalized = reg_to_reimbursement.to_frame().apply(f, axis=1).reset_index(name="reimbursed_per_person") # normalize py pop (douteux puisque nombre(vieux) != nombre(jeunes) dans chaque région mais bon..)
+pivot = reg_to_reimbursement_normalized.pivot(index="BEN_REG", columns="age", values="reimbursed_per_person")
+pivot = pivot[[0, 20, 60]]
+sorted_pivot = pivot.iloc[pivot.sum(axis=1).reset_index()[0].sort_values(ascending=True).index] # ugly sort
+sorted_pivot.index = sorted_pivot.index.map(region_map) # map INSEE region code to region name
+sorted_pivot.columns = sorted_pivot.columns.map(age_map) # map to age groups names
+sorted_pivot.plot.barh(ylabel="Montant remboursé euros par habitant", xlabel="", title="Montant remboursé euros par habitant(et tranche d'age) par region")
 
 
 # The french's preffered medication
@@ -91,7 +98,5 @@ def normalize_by_pop(v: pd.Series):
 
 # df.groupby(by=["L_ATC5"])["BOITES"].sum().sort_values(ascending=True).iloc[-20:].plot.barh(ylabel="Sous-Groupe Substance Chimique", xlabel="Nombre de boites remboursées", title="Les catégories de médicaments préférées des français", logx=True)
 
-
-
-
+plt.subplots_adjust(left=0.3) # leave space on the left ...
 plt.show()
