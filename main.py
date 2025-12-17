@@ -21,7 +21,7 @@ col_to_label = {
     "REM": "Montant Remboursé",
     "BSE": "Base de Remboursement",
     "BOITES": "Nombre de boîtes délivrées",
-    "NBC": "Nombre de consommants"
+    "NBC": "Nombre de consommants",
 }
 
 def fix_french_float(f: str) -> str:
