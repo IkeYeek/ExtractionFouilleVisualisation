@@ -5,7 +5,7 @@
 !dataset
 !merge_regions.py
 !main.py
-!choropleth_skeleton.py
+!choropleths/
 
 !flake.nix
 !flake.lock
