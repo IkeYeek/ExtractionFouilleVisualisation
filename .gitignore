@@ -4,6 +4,7 @@
 !dl_geojson.sh
 !dataset
 !merge_regions.py
+!population_stats.py
 !main.py
 !choropleth_skeleton.py
 
