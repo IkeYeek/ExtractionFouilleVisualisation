@@ -17,6 +17,8 @@
           python313Packages.numpy
           python313Packages.shapely
 
+          python313Packages.openpyxl
+
           libreoffice
         ];
       };

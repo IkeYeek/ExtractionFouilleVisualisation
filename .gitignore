@@ -8,6 +8,7 @@
 !population_stats.py
 !main.py
 !choropleths/
+!readme.md
 
 !flake.nix
 !flake.lock
