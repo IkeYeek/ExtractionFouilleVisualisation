@@ -29,9 +29,11 @@ L'objectif est de voir comment évolue les consommations de médicaments / les d
     - Somme du coût total remboursé.
     - Coût moyen (Somme coût / Somme boîtes).
     - Population Française totale.
+    
+
 ## Maladie la plus traîtée par région
 
-L'objectif est simplement de visualiser la maladie la plus présente par région, à voir si clique sur une région affiche un top en graph barre
+L'objectif est simplement de visualiser le medicament le plus remboursé (nb boites) par région (et la pathologie associée), à voir si clique sur une région affiche un top en graph barre
 
 ### Type de Visualisations
 
@@ -41,6 +43,8 @@ L'objectif est simplement de visualiser la maladie la plus présente par région
 - Catégorie la plus présente par région
     - Couleur : Maladie traitée
     - Métrique : Volume de vente
+    
+
 ## Pour un médicament, évolution du prix au cours des années + évolution du nombre de boites vendues
 
 L'objectif est de suivre l'évolution du prix au niveau d'un seul médicament au cours des années
